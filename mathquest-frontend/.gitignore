@@ -1,0 +1,10 @@
+# Dependências do Node
+node_modules/
+
+# Arquivos de build
+dist/
+build/
+
+# Arquivos de variáveis de ambiente (se houver)
+.env
+
