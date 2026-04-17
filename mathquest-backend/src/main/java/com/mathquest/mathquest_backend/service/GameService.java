@@ -39,7 +39,7 @@ public class GameService {
     Player player = new Player();
     player.setNome(nomeJogador);
     player.setPontos(0);
-    player.setPosicaoAtual(0);
+    player.setPosicaoAtual(1);
     player.setDicasDisponiveis(0);
     //Hábito -> depois do save o objeto recebe o id gerado pelo banco, e ira precisar do id mais pra frente.
     player = playerRepository.save(player);
@@ -174,8 +174,13 @@ public class GameService {
                 game.getQuestaoId().add(question.getId());
                 game = gameRepository.save(game);
                 QuestionDTO questionDTO = embaralharQuestao(question);
-                gameDTO.setTipoDaCasaAtual(tabela.getTipo()); //Automaticamente será do tipo DESAFIO
+                gameDTO.setGameId(game.getId());
+                gameDTO.setPontos(playerAtual.getPontos());
+                gameDTO.setNomeJogadorAtual(playerAtual.getNome());
                 gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
+                gameDTO.setStatus(game.getStatus());
+                gameDTO.setDicasDisponiveis(playerAtual.getDicasDisponiveis());
+                gameDTO.setTipoDaCasaAtual(tabela.getTipo()); //Automaticamente será do tipo DESAFIO
                 gameDTO.setQuestaoAtual(questionDTO);
             }
             case BONUS -> {
@@ -199,7 +204,12 @@ public class GameService {
                 game.getQuestaoId().add(question.getId());
                 game = gameRepository.save(game);
                 QuestionDTO questionDTO = embaralharQuestao(question);
+                gameDTO.setGameId(game.getId());
+                gameDTO.setPontos(playerAtual.getPontos());
+                gameDTO.setNomeJogadorAtual(playerAtual.getNome());
                 gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
+                gameDTO.setStatus(game.getStatus());
+                gameDTO.setDicasDisponiveis(playerAtual.getDicasDisponiveis());
                 gameDTO.setTipoDaCasaAtual(tabela.getTipo()); //Automaticamente será do tipo ARMADILHA
                 gameDTO.setQuestaoAtual(questionDTO);
             }
@@ -254,27 +264,26 @@ public class GameService {
                 } else{
                     switch (tabela.getTipo()){
                         case DESAFIO -> {
-                            //Impede que o jogador fique com pontos negativos
+                            //Subtrai 3 pontos por erro. E impede que o jogador fique com pontos negativos
                             //Nos primeiros testes do jogo, a pontuação acumulava abaixo de 0
-                            if(playerAtual.getPontos() <= 0){
-                                playerAtual.setPontos(0);
-                                playerRepository.save(playerAtual);
-                                proximoTurno(answerDTO.getGameId());
-                            } else{
-                                //Se a pontuação for maior que 0, subtrai 3 pontos por erro.
-                                playerAtual.setPontos(playerAtual.getPontos() - 3);
-                                playerRepository.save(playerAtual);
-                                proximoTurno(answerDTO.getGameId());
-                            }
+                            playerAtual.setPontos(Math.max(0, playerAtual.getPontos() - 3));
+                            playerRepository.save(playerAtual);
+                            gameDTO.setAcertou(false);
+                            proximoTurno(answerDTO.getGameId());
                         }
                         case ARMADILHA -> {
                             //Numero aleatório simulando o dado
                             int movimento = random.nextInt(1,7);
                             //Mais uma garantia de que o player esteja casas acima de 1 para subtrair as casas
-                            if(playerAtual.getPosicaoAtual() >= 1){
-                                //movimenta o jogador conforme o número que cair no dado. DICA MUNDIAL para negativar um número (movimento * -1)
+                            if(playerAtual.getPosicaoAtual() > 1){
+                                //movimenta o jogador para trás conforme o número que cair no dado. DICA MUNDIAL para negativar um número (movimento * -1)
                                 GameStateDTO resultado = moverJogador(answerDTO.getGameId(),  movimento * -1);
                                 resultado.setAcertou(false);
+                                //Subtrai 3 pontos por erro. E impede que o jogador fique com pontos negativos
+                                playerAtual.setPontos(Math.max(0, playerAtual.getPontos() - 3));
+                                playerRepository.save(playerAtual);
+                                resultado.setPontos(playerAtual.getPontos());
+
                                 QuestionDTO questionDTO = new QuestionDTO();
                                 questionDTO.setExplicacao(question.getExplicacao());
                                 resultado.setQuestaoAtual(questionDTO);
