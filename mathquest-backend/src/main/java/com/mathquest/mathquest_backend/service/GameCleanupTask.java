@@ -17,6 +17,7 @@ public class GameCleanupTask {
         this.gameService = gameService;
     }
 
+    //Impede que partidas em andamento continuem após inatividade do jogador ou do sistema e as exclui do BD
     @Scheduled(fixedRate = 60000)
     public void limparPartidasInativas(){
         LocalDateTime limite  = LocalDateTime.now().minusMinutes(10);

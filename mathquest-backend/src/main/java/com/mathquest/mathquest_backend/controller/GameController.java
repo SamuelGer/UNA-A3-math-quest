@@ -41,7 +41,7 @@ public class GameController {
     public GameStateDTO usarDica(@PathVariable Long gameId, @RequestParam Long questaoId){
         return gameService.usarDica(gameId, questaoId);
     }
-    // Envia o tipo de casa de cada desafio (Tipo: BOOLEANA, FUNÇÕES, ETC.) para o front end
+    // Envia o tipo de casa de cada desafio (Tipo: BOOLEANA, FUNÇÕES, etc.) para o front-end
     @GetMapping("/buscar-tabuleiro")
     public List<BoardSquareDTO> buscarTabuleiro(@RequestParam Long gameId){
         return gameService.buscarTabuleiro(gameId);

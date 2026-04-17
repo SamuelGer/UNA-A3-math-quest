@@ -22,10 +22,10 @@ public class GameService {
     private final BoardSquareRepository boardSquareRepository;
     private final QuestionRepository questionRepository;
     private static final int TOTAL_CASAS = 30;
-    private static final int MIN_BONUS = 3;
-    private static final int MAX_BONUS = 6;
-    private static final int MIN_ARMADILHAS = 2;
-    private static final int MAX_ARMADILHAS = 5;
+    private static final int MIN_BONUS = 4;
+    private static final int MAX_BONUS = 7;
+    private static final int MIN_ARMADILHAS = 3;
+    private static final int MAX_ARMADILHAS = 6;
     @Autowired
     public GameService(GameRepository gameRepository, PlayerRepository playerRepository, BoardSquareRepository boardSquareRepository, QuestionRepository questionRepository) {
         this.gameRepository = gameRepository;
@@ -357,7 +357,7 @@ public class GameService {
         dto.setDica(question.getDica());
         return dto;
     }
-
+    //Método criado para não salvar partidas acabadas no banco de dados
     public void finalizarPartida(Long gameId){
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Partida não encontrada!"));
@@ -370,10 +370,12 @@ public class GameService {
         gameRepository.deleteById(game.getId());
     }
 
+    //Método auxiliar para a task de limpeza
     public List<Game> buscarPartidasAtivas(){
         return gameRepository.findByStatus(GameStatus.ANDAMENTO);
     }
 
+    //Método essencial para o front-end, que atualiza a dica do jogador quando usada
     public GameStateDTO usarDica(Long gameId, Long questaoId){
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Partida não encontrada!"));

@@ -19,6 +19,9 @@ public class WebSocketEventListener {
         this.map = new ConcurrentHashMap<>();
     }
 
+    //Maior responsável por receber uma sessão, descobrir quando ela foi encerrada
+    //E com isso, deletar do banco de dados o jogador registrado na mesma sessão capturada
+    //Para evitar acúmulos de jogadores, pois a cada nova instância player, é um objeto novo.
     @EventListener
     public void handleWebSocketDisconnect(SessionDisconnectEvent event){
         String sessionId = event.getSessionId();
@@ -29,6 +32,7 @@ public class WebSocketEventListener {
         }
 
     }
+    //Responsável por capturar a sessão
     public void registrarSessao(String sessionId, Long gameId){
         map.put(sessionId, gameId);
     }
