@@ -13,6 +13,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 @Controller
 public class GameWebSocketController {
     private GameService gameService;
@@ -33,8 +35,8 @@ public class GameWebSocketController {
     }
     @MessageMapping("/game/start")
     @SendTo("/topic/game/novo")
-    public GameStateDTO criarPartida(@Payload String nomeJogador, SimpMessageHeaderAccessor headerAccessor){
-        GameStateDTO gameStateDTO = gameService.criarPartida(nomeJogador);
+    public GameStateDTO criarPartida(@Payload List<String> nomesJogadores, SimpMessageHeaderAccessor headerAccessor){
+        GameStateDTO gameStateDTO = gameService.criarPartida(nomesJogadores);
         // Registra a sessão para limpeza posterior
         String sessionId = headerAccessor.getSessionId();
         webSocketEventListener.registrarSessao(sessionId, gameStateDTO.getGameId());

@@ -34,23 +34,36 @@ public class GameService {
         this.playerRepository = playerRepository;
     }
 
-    public GameStateDTO criarPartida(String nomeJogador){
-    // A partida se inicia quando o player escreve o nome dele.
-    Player player = new Player();
-    player.setNome(nomeJogador);
-    player.setPontos(0);
-    player.setPosicaoAtual(1);
-    player.setDicasDisponiveis(0);
-    //Hábito -> depois do save o objeto recebe o id gerado pelo banco, e ira precisar do id mais pra frente.
-    player = playerRepository.save(player);
-    //Partida iniciada
-    Game game = new Game();
-    game.setJogadores(List.of(player));
-    game.setStatus(GameStatus.AGUARDANDO);
-    game.setQuestaoId(new ArrayList<>());
-    //Hábito -> depois do save o objeto recebe o id gerado pelo banco, e ira precisar do id mais pra frente.
-    game = gameRepository.save(game);
-    //Sorteando quantas casas bonus e armadilhas terá a instância atual do jogo.
+    public GameStateDTO criarPartida(List<String> nomesJogadores){
+        if(nomesJogadores == null || nomesJogadores.isEmpty()){
+            throw new IllegalArgumentException("A lista de jogadores está vazia!");
+        }
+        // Salva o jogador e adiciona na lista de jogadores do jogo
+        List<Player> jogadoresSalvos = new ArrayList<>();
+            for(String nomeJogador : nomesJogadores) {
+            // A partida se inicia quando o player escreve o nome dele.
+            Player player = new Player();
+            player.setNome(nomeJogador);
+            player.setPontos(0);
+            player.setPosicaoAtual(0);
+            player.setDicasDisponiveis(0);
+            //Hábito -> depois do save o objeto recebe o id gerado pelo banco, e ira precisar do id mais pra frente.
+            player = playerRepository.save(player);
+            jogadoresSalvos.add(player);
+        }
+        //Partida iniciada
+        Game game = new Game();
+        game.setJogadores(jogadoresSalvos);
+        game.setStatus(GameStatus.AGUARDANDO);
+        game.setQuestaoId(new ArrayList<>());
+        //Hábito -> depois do save o objeto recebe o id gerado pelo banco, e ira precisar do id mais pra frente.
+        game = gameRepository.save(game);
+
+        List<PlayerDTO> listaJogadoresDTO = jogadoresSalvos.stream()
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .toList();
+
+        //Sorteando quantas casas bonus e armadilhas terá a instância atual do jogo
         Random random = new Random();
         // MAX_BONUS - MIN_BONUS + 1 = 8 - 4 + 1 = 5
         // O random gera 0,1,2,3 ou 4, com o + MIN_BONUS(4), vira 4, 5 ,6, 7, 8.
@@ -105,17 +118,21 @@ public class GameService {
         //Hábito
         game = gameRepository.save(game);
         //Atualizar o DTO, que é o responsável pela comunicação de dados entre o back e o frontend
+        Player primeiroJogador = jogadoresSalvos.getFirst();
         GameStateDTO gameDTO = new GameStateDTO();
+        gameDTO.setTurnoAtual(0);
         gameDTO.setGameId(game.getId());
         gameDTO.setStatus(game.getStatus());
-        gameDTO.setNomeJogadorAtual(nomeJogador);
-        gameDTO.setPontos(player.getPontos());
-        gameDTO.setPosicaoAtual(player.getPosicaoAtual());
-        gameDTO.setDicasDisponiveis(player.getDicasDisponiveis());
+        gameDTO.setNomeJogadorAtual(jogadoresSalvos.getFirst().getNome());
+        gameDTO.setJogadores(listaJogadoresDTO);
+        gameDTO.setPontos(primeiroJogador.getPontos());
+        gameDTO.setPosicaoAtual(primeiroJogador.getPosicaoAtual());
+        gameDTO.setDicasDisponiveis(primeiroJogador.getDicasDisponiveis());
         return gameDTO;
     }
 
     public GameStateDTO rolarDado (Long gameId){
+        GameStateDTO gameDTO = new GameStateDTO();
         Game game = gameRepository.findById(gameId).
                 orElseThrow(() -> new RuntimeException("Partida não encontrada!"));
         Random random = new Random();
@@ -124,7 +141,9 @@ public class GameService {
             //Se estiver, gera um número de 1 a 6 simulando um dado
             int numeroDeCasasAMover = random.nextInt(1,7);
             //Move o jogador utilizando o método moverJogador()
-            return moverJogador(game.getId(), numeroDeCasasAMover);
+            GameStateDTO resultado = moverJogador(game.getId(), numeroDeCasasAMover);
+            resultado.setDadoResultado(numeroDeCasasAMover);
+            return resultado;
         } else {
             throw new RuntimeException("Partida não está em andamento");
         }
@@ -138,7 +157,7 @@ public class GameService {
         //Atualiza a posição dele no tabuleiro, utilizando o math.max para garantir-
         //que o jogador nunca volte a uma casa negativa. Ex: no case ARMADILHA o casasAMover recebe-
         //Um valor negativo, e isso poderia resultar em um valor negativo da posição do jogador no tabuleiro
-        playerAtual.setPosicaoAtual(Math.max(1, playerAtual.getPosicaoAtual() + casasAMover));
+        playerAtual.setPosicaoAtual(Math.max(0, playerAtual.getPosicaoAtual() + casasAMover));
         //Salva no banco de dados
         playerRepository.save(playerAtual);
         game.setUltimaAcao(LocalDateTime.now());
@@ -162,9 +181,15 @@ public class GameService {
             case INICIO -> {
                 gameDTO.setGameId(game.getId());
                 gameDTO.setPontos(playerAtual.getPontos());
+                gameDTO.setTurnoAtual(game.getTurnoAtual());
                 gameDTO.setNomeJogadorAtual(playerAtual.getNome());
                 gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
+                gameDTO.setPlayerId(playerAtual.getId());
                 gameDTO.setStatus(game.getStatus());
+                List<PlayerDTO> listaJogadores = game.getJogadores().stream()
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .toList();
+                gameDTO.setJogadores(listaJogadores);
             }
             case DESAFIO -> {
                 //Acha todas as questões e sorteia uma para cada casa que o jogador estiver
@@ -174,26 +199,38 @@ public class GameService {
                 game.getQuestaoId().add(question.getId());
                 game = gameRepository.save(game);
                 QuestionDTO questionDTO = embaralharQuestao(question);
+                gameDTO.setPlayerId(playerAtual.getId());
                 gameDTO.setGameId(game.getId());
                 gameDTO.setPontos(playerAtual.getPontos());
                 gameDTO.setNomeJogadorAtual(playerAtual.getNome());
+                gameDTO.setTurnoAtual(game.getTurnoAtual());
                 gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
                 gameDTO.setStatus(game.getStatus());
                 gameDTO.setDicasDisponiveis(playerAtual.getDicasDisponiveis());
                 gameDTO.setTipoDaCasaAtual(tabela.getTipo()); //Automaticamente será do tipo DESAFIO
                 gameDTO.setQuestaoAtual(questionDTO);
+                List<PlayerDTO> listaJogadores = game.getJogadores().stream()
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .toList();
+                gameDTO.setJogadores(listaJogadores);
             }
             case BONUS -> {
                 //Acumula uma dica para ser usada quando o jogador sentir que for necessário
                 playerAtual.setDicasDisponiveis(playerAtual.getDicasDisponiveis() + 1);
                 playerRepository.save(playerAtual);
+                gameDTO.setPlayerId(playerAtual.getId());
                 gameDTO.setGameId(game.getId());
+                gameDTO.setTurnoAtual(game.getTurnoAtual());
                 gameDTO.setPontos(playerAtual.getPontos());
                 gameDTO.setNomeJogadorAtual(playerAtual.getNome());
                 gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
                 gameDTO.setStatus(game.getStatus());
                 gameDTO.setDicasDisponiveis(playerAtual.getDicasDisponiveis());
                 gameDTO.setTipoDaCasaAtual(tabela.getTipo());
+                List<PlayerDTO> listaJogadores = game.getJogadores().stream()
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .toList();
+                gameDTO.setJogadores(listaJogadores);
             }
             case ARMADILHA -> {
                 // Tem que receber uma pergunta mais difícil do que as convencionais do jogo
@@ -204,7 +241,9 @@ public class GameService {
                 game.getQuestaoId().add(question.getId());
                 game = gameRepository.save(game);
                 QuestionDTO questionDTO = embaralharQuestao(question);
+                gameDTO.setPlayerId(playerAtual.getId());
                 gameDTO.setGameId(game.getId());
+                gameDTO.setTurnoAtual(game.getTurnoAtual());
                 gameDTO.setPontos(playerAtual.getPontos());
                 gameDTO.setNomeJogadorAtual(playerAtual.getNome());
                 gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
@@ -212,18 +251,28 @@ public class GameService {
                 gameDTO.setDicasDisponiveis(playerAtual.getDicasDisponiveis());
                 gameDTO.setTipoDaCasaAtual(tabela.getTipo()); //Automaticamente será do tipo ARMADILHA
                 gameDTO.setQuestaoAtual(questionDTO);
+                List<PlayerDTO> listaJogadores = game.getJogadores().stream()
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .toList();
+                gameDTO.setJogadores(listaJogadores);
             }
             case TESOURO -> {
                 //Fim do jogo
                 game.setStatus(GameStatus.FIM);
                 gameDTO.setMensagem(playerAtual.getNome() + " venceu! Com: " + playerAtual.getPontos() + " Pontos.");
                 game = gameRepository.save(game);
+                gameDTO.setPlayerId(playerAtual.getId());
                 gameDTO.setGameId(game.getId());
+                gameDTO.setTurnoAtual(game.getTurnoAtual());
                 gameDTO.setPontos(playerAtual.getPontos());
                 gameDTO.setNomeJogadorAtual(playerAtual.getNome());
                 gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
                 gameDTO.setStatus(game.getStatus());
                 finalizarPartida(game.getId());
+                List<PlayerDTO> listaJogadores = game.getJogadores().stream()
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .toList();
+                gameDTO.setJogadores(listaJogadores);
             }
         }
         return gameDTO;
@@ -259,7 +308,8 @@ public class GameService {
                     // Salva o status do player no BD
                     playerRepository.save(playerAtual);
                     //Troca o turno da jogada
-                    proximoTurno(answerDTO.getGameId());
+                    GameStateDTO proximoDTO = proximoTurno(answerDTO.getGameId());
+                    gameDTO.setTurnoAtual(proximoDTO.getTurnoAtual());
                     //Se errar, verifica se ele caiu numa armadilha ou num desafio comum, para diferenciar o tipo de punição
                 } else{
                     switch (tabela.getTipo()){
@@ -269,7 +319,8 @@ public class GameService {
                             playerAtual.setPontos(Math.max(0, playerAtual.getPontos() - 3));
                             playerRepository.save(playerAtual);
                             gameDTO.setAcertou(false);
-                            proximoTurno(answerDTO.getGameId());
+                            GameStateDTO proximoDTO = proximoTurno(answerDTO.getGameId());
+                            gameDTO.setTurnoAtual(proximoDTO.getTurnoAtual());;
                         }
                         case ARMADILHA -> {
                             //Numero aleatório simulando o dado
@@ -287,7 +338,8 @@ public class GameService {
                                 QuestionDTO questionDTO = new QuestionDTO();
                                 questionDTO.setExplicacao(question.getExplicacao());
                                 resultado.setQuestaoAtual(questionDTO);
-                                proximoTurno(answerDTO.getGameId());
+                                GameStateDTO proximoDTO = proximoTurno(answerDTO.getGameId());
+                                resultado.setTurnoAtual(proximoDTO.getTurnoAtual());
                                 return resultado;
                             }
                         }
@@ -297,12 +349,20 @@ public class GameService {
             QuestionDTO questionDTO = new QuestionDTO();
             questionDTO.setExplicacao(question.getExplicacao());
             gameDTO.setQuestaoAtual(questionDTO);
+            gameDTO.setPlayerId(playerAtual.getId());
             gameDTO.setGameId(answerDTO.getGameId());
             gameDTO.setStatus(game.getStatus());
             gameDTO.setNomeJogadorAtual(playerAtual.getNome());
             gameDTO.setPontos(playerAtual.getPontos());
             gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
             gameDTO.setTipoDaCasaAtual(tabela.getTipo());
+
+            List<PlayerDTO> listaJogadores = game.getJogadores().stream()
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .toList();
+
+            gameDTO.setJogadores(listaJogadores);
+
         return gameDTO;
     }
 
@@ -313,18 +373,27 @@ public class GameService {
         List<Player> totalJogadores = game.getJogadores();
         //Passa para o proximo jogador usando o resto da Divisão
         //Se chegar ao limite de jogadores ele volta para o primeiro indice
-        game.setTurnoAtual((game.getTurnoAtual() + 1) % totalJogadores.size());
+        int novoIndice = (game.getTurnoAtual() + 1)% totalJogadores.size();
+        game.setTurnoAtual(novoIndice);
         //variavel pra receber o proximo jogador
-        Player proximoJogador = game.getJogadores().get(game.getTurnoAtual());
+        Player proximoJogador = game.getJogadores().get(novoIndice);
         game = gameRepository.save(game);
         GameStateDTO gameDTO = new GameStateDTO();
+
+        gameDTO.setTurnoAtual(novoIndice);
         gameDTO.setGameId(gameId);
+        gameDTO.setPlayerId(proximoJogador.getId());
         gameDTO.setStatus(game.getStatus());
         gameDTO.setNomeJogadorAtual(proximoJogador.getNome());
         gameDTO.setPontos(proximoJogador.getPontos());
         gameDTO.setPosicaoAtual(proximoJogador.getPosicaoAtual());
         gameDTO.setDicasDisponiveis(proximoJogador.getDicasDisponiveis());
 
+        List<PlayerDTO> listaJogadoresDTO = totalJogadores.stream()
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .toList();
+
+        gameDTO.setJogadores(listaJogadoresDTO);
         return gameDTO;
     }
 
@@ -384,11 +453,16 @@ public class GameService {
         Question questao = questionRepository.findById(questaoId)
                 .orElseThrow(() -> new RuntimeException("Questão não encontrada!"));
         GameStateDTO gameDTO = new GameStateDTO();
+        gameDTO.setPlayerId(playerAtual.getId());
         gameDTO.setGameId(gameId);
         gameDTO.setStatus(game.getStatus());
         gameDTO.setNomeJogadorAtual(playerAtual.getNome());
         gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
         gameDTO.setPontos(playerAtual.getPontos());
+        List<PlayerDTO> listaJogadores = game.getJogadores().stream()
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .toList();
+        gameDTO.setJogadores(listaJogadores);
 
         if(playerAtual.getDicasDisponiveis() >= 1){
             playerAtual.setDicasDisponiveis(playerAtual.getDicasDisponiveis() - 1);

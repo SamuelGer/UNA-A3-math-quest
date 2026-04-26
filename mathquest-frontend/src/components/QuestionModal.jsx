@@ -14,21 +14,23 @@ const CAT = {
 export default function QuestionModal() {
   const {
     questaoAtual, gameId,
-    processarRespostaQuestao, fecharQuestao,
+    processarRespostaQuestao, confirmarTurno,  // ← confirmarTurno no lugar de fecharQuestao
     respostaFeedback, explicacaoAtual,
-    dicasAcumuladas,
+    jogadores, turnoAtual,                     // ← para pegar dicasDisponiveis do jogador ativo
   } = useGameStore();
 
   const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
   const [enviando,         setEnviando]         = useState(false);
   const [timer,            setTimer]            = useState(45);
-  const [dicaVisivel,      setDicaVisivel]      = useState(null);  // texto da dica revelada
+  const [dicaVisivel,      setDicaVisivel]      = useState(null);
   const [carregandoDica,   setCarregandoDica]   = useState(false);
   const [podeContinuar,    setPodeContinuar]    = useState(false);
   const timerRef = useRef(null);
 
-  const cat      = CAT[questaoAtual?.categoria] || { label:'Desafio', cor:'#6B7280', timer:45 };
-  const timerMax = cat.timer;
+  const jogadorAtivo = jogadores[turnoAtual];
+  const dicasDisp    = jogadorAtivo?.dicasDisponiveis || 0;  // ← substituiu dicasAcumuladas
+  const cat          = CAT[questaoAtual?.categoria] || { label:'Desafio', cor:'#6B7280', timer:45 };
+  const timerMax     = cat.timer;
 
   // Reset a cada nova questão
   useEffect(() => {
@@ -73,25 +75,17 @@ export default function QuestionModal() {
     }
   };
 
-  // Usar dica — chama o backend, que decrementa e retorna o texto da dica
+  // Usar dica
   const handleUsarDica = async () => {
-    if (dicaVisivel || carregandoDica || dicasAcumuladas.length === 0) return;
+    if (dicaVisivel || carregandoDica || dicasDisp === 0) return;
     setCarregandoDica(true);
     try {
       const res = await apiUsarDica(gameId, questaoAtual.id);
-      // Backend retorna gameDTO com campo dica = questao.getDica()
-      const textoRecebido = res.data.dica;
-      // Atualiza dicasDisponiveis no store
-      useGameStore.setState(s => ({
-        dicasAcumuladas: s.dicasAcumuladas.slice(0, -1),
-      }));
-      setDicaVisivel(textoRecebido || questaoAtual.dica || '💡 Dica não disponível.');
+      useGameStore.getState().usarDicaNaQuestao();
+      setDicaVisivel(res.data.dica || questaoAtual.dica || '💡 Dica não disponível.');
     } catch {
-      // Fallback: usa a dica local da questão
       setDicaVisivel(questaoAtual.dica || '💡 Dica não disponível.');
-      useGameStore.setState(s => ({
-        dicasAcumuladas: s.dicasAcumuladas.slice(0, -1),
-      }));
+      useGameStore.getState().usarDicaNaQuestao();
     } finally {
       setCarregandoDica(false);
     }
@@ -168,8 +162,8 @@ export default function QuestionModal() {
             const isSel     = opcaoSelecionada === opcao;
             const isCorrect = respostaFeedback === 'erro' && i === questaoAtual.indiceCorreto;
             let bg = 'rgba(255,255,255,0.03)', border = '1px solid #2A2820', color = '#C8BBAA';
-            if (isSel && respostaFeedback === 'acerto') { bg='rgba(34,197,94,0.14)'; border='1px solid #22C55E'; color='#86EFAC'; }
-            if (isSel && respostaFeedback === 'erro')   { bg='rgba(239,68,68,0.14)'; border='1px solid #EF4444'; color='#FCA5A5'; }
+            if (isSel && respostaFeedback === 'acerto') { bg='rgba(34,197,94,0.14)';  border='1px solid #22C55E'; color='#86EFAC'; }
+            if (isSel && respostaFeedback === 'erro')   { bg='rgba(239,68,68,0.14)';  border='1px solid #EF4444'; color='#FCA5A5'; }
             if (isCorrect)                               { bg='rgba(34,197,94,0.14)'; border='1px solid #22C55E'; color='#86EFAC'; }
 
             return (
@@ -239,13 +233,13 @@ export default function QuestionModal() {
           )}
         </AnimatePresence>
 
-        {/* Botão Continuar */}
+        {/* Botão Continuar — aparece após 900ms do feedback */}
         <AnimatePresence>
           {podeContinuar && (
             <motion.button
               initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }}
               whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}
-              onClick={fecharQuestao}
+              onClick={confirmarTurno}
               style={{
                 display:'block', width:'100%', padding:14, marginBottom:10,
                 background:'linear-gradient(135deg, var(--gold), var(--gold-dim))',
@@ -260,8 +254,8 @@ export default function QuestionModal() {
           )}
         </AnimatePresence>
 
-        {/* Botão Usar Dica — só aparece se tem dicas e ainda não respondeu */}
-        {!respostaFeedback && !dicaVisivel && dicasAcumuladas.length > 0 && (
+        {/* Botão Usar Dica */}
+        {!respostaFeedback && !dicaVisivel && dicasDisp > 0 && (
           <motion.button
             whileHover={{ scale:1.01 }}
             whileTap={{ scale:0.97 }}
@@ -277,7 +271,7 @@ export default function QuestionModal() {
               transition:'all 0.2s',
             }}
           >
-            {carregandoDica ? 'Buscando dica...' : `💡 Usar Dica (${dicasAcumuladas.length} disponível)`}
+            {carregandoDica ? 'Buscando dica...' : `💡 Usar Dica (${dicasDisp} disponível)`}
           </motion.button>
         )}
       </motion.div>

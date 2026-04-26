@@ -26,8 +26,8 @@ public class GameController {
         this.boardSquareRepository = boardSquareRepository;
     }
     @PostMapping("/start")
-    public GameStateDTO criarPartida(@RequestParam String nomeJogador) {
-        return gameService.criarPartida(nomeJogador);
+    public GameStateDTO criarPartida(@RequestBody List<String> nomesJogadores) {
+        return gameService.criarPartida(nomesJogadores);
     }
     @PostMapping("/rolar/{gameId}")
     public GameStateDTO rolarDado(@PathVariable Long gameId){
