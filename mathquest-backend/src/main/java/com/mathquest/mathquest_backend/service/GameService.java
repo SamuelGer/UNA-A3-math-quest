@@ -45,7 +45,7 @@ public class GameService {
             Player player = new Player();
             player.setNome(nomeJogador);
             player.setPontos(0);
-            player.setPosicaoAtual(0);
+            player.setPosicaoAtual(1);
             player.setDicasDisponiveis(0);
             //Hábito -> depois do save o objeto recebe o id gerado pelo banco, e ira precisar do id mais pra frente.
             player = playerRepository.save(player);
@@ -60,7 +60,7 @@ public class GameService {
         game = gameRepository.save(game);
 
         List<PlayerDTO> listaJogadoresDTO = jogadoresSalvos.stream()
-                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(),p.getDicasDisponiveis()))
                 .toList();
 
         //Sorteando quantas casas bonus e armadilhas terá a instância atual do jogo
@@ -157,7 +157,7 @@ public class GameService {
         //Atualiza a posição dele no tabuleiro, utilizando o math.max para garantir-
         //que o jogador nunca volte a uma casa negativa. Ex: no case ARMADILHA o casasAMover recebe-
         //Um valor negativo, e isso poderia resultar em um valor negativo da posição do jogador no tabuleiro
-        playerAtual.setPosicaoAtual(Math.max(0, playerAtual.getPosicaoAtual() + casasAMover));
+        playerAtual.setPosicaoAtual(Math.max(1, playerAtual.getPosicaoAtual() + casasAMover));
         //Salva no banco de dados
         playerRepository.save(playerAtual);
         game.setUltimaAcao(LocalDateTime.now());
@@ -187,7 +187,7 @@ public class GameService {
                 gameDTO.setPlayerId(playerAtual.getId());
                 gameDTO.setStatus(game.getStatus());
                 List<PlayerDTO> listaJogadores = game.getJogadores().stream()
-                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(),p.getDicasDisponiveis()))
                         .toList();
                 gameDTO.setJogadores(listaJogadores);
             }
@@ -210,7 +210,7 @@ public class GameService {
                 gameDTO.setTipoDaCasaAtual(tabela.getTipo()); //Automaticamente será do tipo DESAFIO
                 gameDTO.setQuestaoAtual(questionDTO);
                 List<PlayerDTO> listaJogadores = game.getJogadores().stream()
-                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(), p.getDicasDisponiveis()))
                         .toList();
                 gameDTO.setJogadores(listaJogadores);
             }
@@ -228,7 +228,7 @@ public class GameService {
                 gameDTO.setDicasDisponiveis(playerAtual.getDicasDisponiveis());
                 gameDTO.setTipoDaCasaAtual(tabela.getTipo());
                 List<PlayerDTO> listaJogadores = game.getJogadores().stream()
-                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(), p.getDicasDisponiveis()))
                         .toList();
                 gameDTO.setJogadores(listaJogadores);
             }
@@ -252,7 +252,7 @@ public class GameService {
                 gameDTO.setTipoDaCasaAtual(tabela.getTipo()); //Automaticamente será do tipo ARMADILHA
                 gameDTO.setQuestaoAtual(questionDTO);
                 List<PlayerDTO> listaJogadores = game.getJogadores().stream()
-                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(), p.getDicasDisponiveis()))
                         .toList();
                 gameDTO.setJogadores(listaJogadores);
             }
@@ -270,7 +270,7 @@ public class GameService {
                 gameDTO.setStatus(game.getStatus());
                 finalizarPartida(game.getId());
                 List<PlayerDTO> listaJogadores = game.getJogadores().stream()
-                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                        .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(), p.getDicasDisponiveis()))
                         .toList();
                 gameDTO.setJogadores(listaJogadores);
             }
@@ -358,7 +358,7 @@ public class GameService {
             gameDTO.setTipoDaCasaAtual(tabela.getTipo());
 
             List<PlayerDTO> listaJogadores = game.getJogadores().stream()
-                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(), p.getDicasDisponiveis()))
                 .toList();
 
             gameDTO.setJogadores(listaJogadores);
@@ -390,7 +390,7 @@ public class GameService {
         gameDTO.setDicasDisponiveis(proximoJogador.getDicasDisponiveis());
 
         List<PlayerDTO> listaJogadoresDTO = totalJogadores.stream()
-                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(), p.getDicasDisponiveis()))
                 .toList();
 
         gameDTO.setJogadores(listaJogadoresDTO);
@@ -460,7 +460,7 @@ public class GameService {
         gameDTO.setPosicaoAtual(playerAtual.getPosicaoAtual());
         gameDTO.setPontos(playerAtual.getPontos());
         List<PlayerDTO> listaJogadores = game.getJogadores().stream()
-                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual()))
+                .map(p -> new PlayerDTO(p.getId(), p.getNome(), p.getPontos(), p.getPosicaoAtual(), p.getDicasDisponiveis()))
                 .toList();
         gameDTO.setJogadores(listaJogadores);
 

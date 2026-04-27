@@ -27,6 +27,7 @@ export default function GameScreen() {
     rolandoDado, setRolandoDado, processarRespostaDado,
     novaDicaMensagem, fecharNovaDica,
     animacaoPendente, limparAnimacao,
+    respostaFeedback
   } = useGameStore();
 
   const [tabuleiro, setTabuleiro] = useState({});
@@ -208,7 +209,7 @@ export default function GameScreen() {
         </AnimatePresence>
       </main>
 
-      {questaoAtual && <QuestionModal />}
+      {questaoAtual && (!movendo || respostaFeedback) && <QuestionModal />}
     </div>
   );
 }
