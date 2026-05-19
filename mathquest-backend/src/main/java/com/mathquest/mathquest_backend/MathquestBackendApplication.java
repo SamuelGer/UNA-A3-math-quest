@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class MathquestBackendApplication {
+public class cdMathquestBackendApplication {
 	static void main(String[] args) {
 		SpringApplication.run(MathquestBackendApplication.class, args);
 	}

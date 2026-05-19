@@ -29,15 +29,15 @@ public class GameController {
     public GameStateDTO criarPartida(@RequestBody List<String> nomesJogadores) {
         return gameService.criarPartida(nomesJogadores);
     }
-    @PostMapping("/rolar/{gameId}")
+    @PutMapping("/rolar/{gameId}") //@PutMapping
     public GameStateDTO rolarDado(@PathVariable Long gameId){
         return gameService.rolarDado(gameId);
     }
-    @PostMapping("/responder")
+    @PutMapping("/responder") //@PutMapping
     public GameStateDTO responderQuestão(@RequestBody AnswerDTO answerDTO){
         return gameService.responderQuestao(answerDTO);
     }
-    @PostMapping("/usar-dica/{gameId}")
+    @PutMapping("/usar-dica/{gameId}") //@PutMapping
     public GameStateDTO usarDica(@PathVariable Long gameId, @RequestParam Long questaoId){
         return gameService.usarDica(gameId, questaoId);
     }
@@ -46,4 +46,5 @@ public class GameController {
     public List<BoardSquareDTO> buscarTabuleiro(@RequestParam Long gameId){
         return gameService.buscarTabuleiro(gameId);
     }
+
 }

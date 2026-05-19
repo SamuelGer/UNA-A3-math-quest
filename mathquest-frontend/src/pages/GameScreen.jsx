@@ -115,7 +115,7 @@ export default function GameScreen() {
       {/* ── SIDEBAR ── */}
       <motion.aside
         initial={{x:-60,opacity:0}} animate={{x:0,opacity:1}} transition={{delay:0.2}}
-        style={{position:'relative',zIndex:1,width:220,flexShrink:0,padding:'18px 14px',borderRight:'1px solid #1A1A10',display:'flex',flexDirection:'column',gap:10,overflowY:'auto'}}>
+        style={{position:'relative',zIndex:1,width:240,flexShrink:0,padding:'18px 14px',borderRight:'1px solid #1A1A10',display:'flex',flexDirection:'column',gap:10,overflowY:'auto'}}>
 
         {/* Jogador ativo */}
         <div style={{...card, border:'1px solid var(--gold-dim)', textAlign:'center'}}>
@@ -181,11 +181,11 @@ export default function GameScreen() {
       <main style={{position:'relative',zIndex:1,flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24,gap:14}}>
         <motion.div
           initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} transition={{delay:0.3,duration:0.5}}
-          style={{display:'flex',flexDirection:'column',gap:5,padding:18,background:'rgba(10,10,6,0.72)',border:'1px solid #1E1E16',borderRadius:14,boxShadow:'0 0 60px rgba(0,0,0,0.5)'}}>
+          style={{display:'flex',flexDirection:'column',gap:5,padding:22,background:'rgba(10,10,6,0.72)',border:'1px solid #1E1E16',borderRadius:14,boxShadow:'0 0 60px rgba(0,0,0,0.5)'}}>
           {LAYOUT.map((linha, li) => (
-            <div key={li} style={{display:'flex',gap:5}}>
+            <div key={li} style={{display:'flex',gap:6}}>
               {linha.map(num => (
-                <div key={num} style={{width:'clamp(52px,7vw,78px)'}}>
+                <div key={num} style={{width:'clamp(68px,8vw,96px)'}}>
                   <BoardSquare numero={num} tipo={getTipo(num)} jogadores={jogadoresComPos} />
                 </div>
               ))}
