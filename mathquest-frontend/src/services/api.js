@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE = 'https://mathquest-24qk.onrender.com/api/game';
+const BASE = 'http://localhost:8080/api/game';
 export const apiCriarPartida    = (nomes)             => axios.post(`${BASE}/start`, nomes);
 export const apiRolarDado        = (gameId)            => axios.put(`${BASE}/rolar/${gameId}`);
 export const apiResponder        = (dto)               => axios.put(`${BASE}/responder`, dto);
