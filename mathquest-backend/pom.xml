@@ -11,7 +11,7 @@
 	<groupId>com.mathquest</groupId>
 	<artifactId>mathquest-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mathquest-backend</name>
+	<name/>
 	<description/>
 	<url/>
 	<licenses>
@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>25</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -81,7 +81,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.mathquest.mathquest_backend.MathquestBackendApplication</mainClass>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
