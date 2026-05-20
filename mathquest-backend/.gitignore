@@ -39,8 +39,8 @@ build/
 .vscode/
 
 #Security
-aplication.properties
+application.properties
 .env
-.mvn
-/.mvn
+
+
 

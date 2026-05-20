@@ -1,3 +1,6 @@
 .idea/
 .mvn/
+.mvn
+.idea
+.mvn/wrapper
 
