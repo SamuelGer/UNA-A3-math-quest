@@ -5,11 +5,13 @@ import com.mathquest.mathquest_backend.domain.QuestionCategory;
 import com.mathquest.mathquest_backend.domain.QuestionDificulty;
 import com.mathquest.mathquest_backend.repository.QuestionRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@DependsOn("entityManagerFactory")
 public class QuestionLoader {
 
     QuestionRepository questionRepository;
