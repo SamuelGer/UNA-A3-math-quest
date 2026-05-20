@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE = 'http://localhost:8080/api/game';
+const BASE = 'https://rounding-mankind-affected.ngrok-free.app/api/game';
 export const apiCriarPartida    = (nomes)             => axios.post(`${BASE}/start`, nomes);
 export const apiRolarDado        = (gameId)            => axios.put(`${BASE}/rolar/${gameId}`);
 export const apiResponder        = (dto)               => axios.put(`${BASE}/responder`, dto);
