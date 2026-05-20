@@ -41,5 +41,6 @@ build/
 #Security
 aplication.properties
 .env
-
+.mvn
+/.mvn
 
