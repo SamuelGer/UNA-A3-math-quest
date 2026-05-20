@@ -41,6 +41,6 @@ build/
 #Security
 application.properties
 .env
-
+**/application.properties
 
 
