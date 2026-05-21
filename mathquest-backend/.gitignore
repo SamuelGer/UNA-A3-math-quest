@@ -39,8 +39,7 @@ build/
 .vscode/
 
 #Security
-application.properties
 .env
-**/application.properties
+
 
 
