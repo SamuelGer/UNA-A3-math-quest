@@ -1,7 +1,7 @@
-package com.mathquest.mathquest_backend.dto;
+package com.mathquest.mathquest_backend.java.dto;
 
 
-import com.mathquest.mathquest_backend.domain.SquareType;
+import com.mathquest.mathquest_backend.java.domain.SquareType;
 import lombok.Data;
 
 @Data

@@ -1,8 +1,7 @@
-package com.mathquest.mathquest_backend.repository;
+package com.mathquest.mathquest_backend.java.repository;
 
-import com.mathquest.mathquest_backend.domain.BoardSquare;
-import com.mathquest.mathquest_backend.domain.Game;
-import com.mathquest.mathquest_backend.dto.BoardSquareDTO;
+import com.mathquest.mathquest_backend.java.domain.BoardSquare;
+import com.mathquest.mathquest_backend.java.domain.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

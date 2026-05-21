@@ -1,6 +1,6 @@
-package com.mathquest.mathquest_backend.service;
+package com.mathquest.mathquest_backend.java.service;
 
-import com.mathquest.mathquest_backend.domain.Game;
+import com.mathquest.mathquest_backend.java.domain.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;

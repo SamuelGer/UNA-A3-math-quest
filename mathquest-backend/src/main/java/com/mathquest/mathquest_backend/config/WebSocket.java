@@ -1,4 +1,4 @@
-package com.mathquest.mathquest_backend.config;
+package com.mathquest.mathquest_backend.java.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

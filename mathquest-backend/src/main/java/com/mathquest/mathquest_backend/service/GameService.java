@@ -1,18 +1,18 @@
-package com.mathquest.mathquest_backend.service;
+package com.mathquest.mathquest_backend.java.service;
 
 import com.mathquest.mathquest_backend.domain.*;
 import com.mathquest.mathquest_backend.dto.*;
-import com.mathquest.mathquest_backend.repository.BoardSquareRepository;
-import com.mathquest.mathquest_backend.repository.GameRepository;
-import com.mathquest.mathquest_backend.repository.PlayerRepository;
-import com.mathquest.mathquest_backend.repository.QuestionRepository;
+import com.mathquest.mathquest_backend.java.repository.BoardSquareRepository;
+import com.mathquest.mathquest_backend.java.repository.GameRepository;
+import com.mathquest.mathquest_backend.java.repository.PlayerRepository;
+import com.mathquest.mathquest_backend.java.repository.QuestionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import static com.mathquest.mathquest_backend.domain.SquareType.DESAFIO;
+import static com.mathquest.mathquest_backend.java.domain.SquareType.DESAFIO;
 
 @Service
 @Transactional

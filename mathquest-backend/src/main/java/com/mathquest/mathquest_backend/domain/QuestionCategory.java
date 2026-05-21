@@ -1,4 +1,4 @@
-package com.mathquest.mathquest_backend.domain;
+package com.mathquest.mathquest_backend.java.domain;
 
 public enum QuestionCategory {
     BOOLEANA,

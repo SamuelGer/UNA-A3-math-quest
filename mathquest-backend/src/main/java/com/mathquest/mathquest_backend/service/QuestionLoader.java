@@ -1,9 +1,9 @@
-package com.mathquest.mathquest_backend.service;
+package com.mathquest.mathquest_backend.java.service;
 
-import com.mathquest.mathquest_backend.domain.Question;
-import com.mathquest.mathquest_backend.domain.QuestionCategory;
-import com.mathquest.mathquest_backend.domain.QuestionDificulty;
-import com.mathquest.mathquest_backend.repository.QuestionRepository;
+import com.mathquest.mathquest_backend.java.domain.Question;
+import com.mathquest.mathquest_backend.java.domain.QuestionCategory;
+import com.mathquest.mathquest_backend.java.domain.QuestionDificulty;
+import com.mathquest.mathquest_backend.java.repository.QuestionRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
-package com.mathquest.mathquest_backend.repository;
+package com.mathquest.mathquest_backend.java.repository;
 
-import com.mathquest.mathquest_backend.domain.Question;
-import com.mathquest.mathquest_backend.domain.QuestionDificulty;
+import com.mathquest.mathquest_backend.java.domain.Question;
+import com.mathquest.mathquest_backend.java.domain.QuestionDificulty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

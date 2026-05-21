@@ -1,4 +1,4 @@
-package com.mathquest.mathquest_backend.dto;
+package com.mathquest.mathquest_backend.java.dto;
 
 import lombok.Data;
 

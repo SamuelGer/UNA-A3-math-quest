@@ -1,7 +1,7 @@
-package com.mathquest.mathquest_backend.repository;
+package com.mathquest.mathquest_backend.java.repository;
 
-import com.mathquest.mathquest_backend.domain.Game;
-import com.mathquest.mathquest_backend.domain.GameStatus;
+import com.mathquest.mathquest_backend.java.domain.Game;
+import com.mathquest.mathquest_backend.java.domain.GameStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

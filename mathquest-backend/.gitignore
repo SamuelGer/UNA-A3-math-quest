@@ -34,6 +34,7 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+**/Dockerfile
 
 ### VS Code ###
 .vscode/

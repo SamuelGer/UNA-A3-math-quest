@@ -1,6 +1,6 @@
-package com.mathquest.mathquest_backend.dto;
+package com.mathquest.mathquest_backend.java.dto;
 
-import com.mathquest.mathquest_backend.domain.QuestionCategory;
+import com.mathquest.mathquest_backend.java.domain.QuestionCategory;
 import lombok.Data;
 import java.util.List;
 
