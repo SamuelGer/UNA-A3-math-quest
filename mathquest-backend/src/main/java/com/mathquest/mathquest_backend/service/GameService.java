@@ -1,18 +1,18 @@
-package com.mathquest.mathquest_backend.java.service;
+package com.mathquest.mathquest_backend.service;
 
 import com.mathquest.mathquest_backend.domain.*;
 import com.mathquest.mathquest_backend.dto.*;
-import com.mathquest.mathquest_backend.java.repository.BoardSquareRepository;
-import com.mathquest.mathquest_backend.java.repository.GameRepository;
-import com.mathquest.mathquest_backend.java.repository.PlayerRepository;
-import com.mathquest.mathquest_backend.java.repository.QuestionRepository;
+import com.mathquest.mathquest_backend.repository.BoardSquareRepository;
+import com.mathquest.mathquest_backend.repository.GameRepository;
+import com.mathquest.mathquest_backend.repository.PlayerRepository;
+import com.mathquest.mathquest_backend.repository.QuestionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import static com.mathquest.mathquest_backend.java.domain.SquareType.DESAFIO;
+import static com.mathquest.mathquest_backend.domain.SquareType.DESAFIO;
 
 @Service
 @Transactional
@@ -132,7 +132,6 @@ public class GameService {
     }
 
     public GameStateDTO rolarDado (Long gameId){
-        GameStateDTO gameDTO = new GameStateDTO();
         Game game = gameRepository.findById(gameId).
                 orElseThrow(() -> new RuntimeException("Partida não encontrada!"));
         Random random = new Random();
@@ -235,7 +234,7 @@ public class GameService {
             case ARMADILHA -> {
                 // Tem que receber uma pergunta mais difícil do que as convencionais do jogo
                 // se ele errar, o dado roda e ele volta o número de casas que cair no dado
-                List<Question> questaoDificil = questionRepository.findByDifficultyAndIdNotIn(QuestionDificulty.DIFICIL, game.getQuestaoId());
+                List<Question> questaoDificil = questionRepository.findByDifficultyAndIdNotIn(QuestionDifficulty.DIFICIL, game.getQuestaoId());
                 int questaoSorteada = random.nextInt(0, questaoDificil.size());
                 Question question = questaoDificil.get(questaoSorteada);
                 game.getQuestaoId().add(question.getId());
@@ -320,7 +319,7 @@ public class GameService {
                             playerRepository.save(playerAtual);
                             gameDTO.setAcertou(false);
                             GameStateDTO proximoDTO = proximoTurno(answerDTO.getGameId());
-                            gameDTO.setTurnoAtual(proximoDTO.getTurnoAtual());;
+                            gameDTO.setTurnoAtual(proximoDTO.getTurnoAtual());
                         }
                         case ARMADILHA -> {
                             //Numero aleatório simulando o dado

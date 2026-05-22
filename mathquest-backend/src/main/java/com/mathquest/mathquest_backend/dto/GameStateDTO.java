@@ -1,7 +1,7 @@
-package com.mathquest.mathquest_backend.java.dto;
+package com.mathquest.mathquest_backend.dto;
 
-import com.mathquest.mathquest_backend.java.domain.GameStatus;
-import com.mathquest.mathquest_backend.java.domain.SquareType;
+import com.mathquest.mathquest_backend.domain.GameStatus;
+import com.mathquest.mathquest_backend.domain.SquareType;
 import lombok.Data;
 
 import java.util.List;

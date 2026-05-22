@@ -1,4 +1,4 @@
-package com.mathquest.mathquest_backend.java.domain;
+package com.mathquest.mathquest_backend.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,6 +1,6 @@
-package com.mathquest.mathquest_backend.java.config;
+package com.mathquest.mathquest_backend.config;
 
-import com.mathquest.mathquest_backend.java.service.GameService;
+import com.mathquest.mathquest_backend.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

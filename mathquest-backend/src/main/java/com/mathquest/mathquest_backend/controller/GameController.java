@@ -1,13 +1,11 @@
-package com.mathquest.mathquest_backend.java.controller;
+package com.mathquest.mathquest_backend.controller;
 
-import com.mathquest.mathquest_backend.java.dto.AnswerDTO;
-import com.mathquest.mathquest_backend.java.dto.BoardSquareDTO;
-import com.mathquest.mathquest_backend.java.dto.GameStateDTO;
-import com.mathquest.mathquest_backend.java.repository.BoardSquareRepository;
-import com.mathquest.mathquest_backend.java.service.GameService;
+import com.mathquest.mathquest_backend.dto.AnswerDTO;
+import com.mathquest.mathquest_backend.dto.BoardSquareDTO;
+import com.mathquest.mathquest_backend.dto.GameStateDTO;
+import com.mathquest.mathquest_backend.repository.BoardSquareRepository;
+import com.mathquest.mathquest_backend.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

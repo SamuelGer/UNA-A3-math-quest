@@ -1,4 +1,4 @@
-package com.mathquest.mathquest_backend.java.domain;
+package com.mathquest.mathquest_backend.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,6 +21,6 @@ public class Question {
     private String dica;
     private String explicacao;
     @Enumerated(EnumType.STRING)
-    private QuestionDificulty difficulty;
+    private QuestionDifficulty difficulty;
 
 }

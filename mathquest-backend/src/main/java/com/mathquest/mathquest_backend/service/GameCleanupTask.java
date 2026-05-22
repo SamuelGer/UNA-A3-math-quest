@@ -1,8 +1,7 @@
-package com.mathquest.mathquest_backend.java.service;
+package com.mathquest.mathquest_backend.service;
 
-import com.mathquest.mathquest_backend.java.domain.Game;
+import com.mathquest.mathquest_backend.domain.Game;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Component
 public class GameCleanupTask {
-    private GameService gameService;
+    private final GameService gameService;
     @Autowired
     public GameCleanupTask(GameService gameService) {
         this.gameService = gameService;
