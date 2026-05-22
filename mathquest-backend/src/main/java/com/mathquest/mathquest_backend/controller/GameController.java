@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/game")
+@CrossOrigin(origins = "mathquest-nu.vercel.app")
 public class GameController {
     GameService gameService;
     BoardSquareRepository boardSquareRepository;
