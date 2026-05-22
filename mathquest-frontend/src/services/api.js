@@ -1,7 +1,5 @@
 import axios from 'axios';
-
 const URL_SERVIDOR = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-
 const BASE = `${URL_SERVIDOR}/api/game`;
 
 export const apiCriarPartida    = (nomes)             => axios.post(`${BASE}/start`, nomes);
