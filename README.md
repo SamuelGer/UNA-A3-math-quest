@@ -45,6 +45,7 @@ O objetivo é estimular o raciocínio lógico e o aprendizado de operações mat
 | Spring Data JPA + Hibernate | ORM para persistência de dados |
 | MySQL 8 | Banco de dados relacional |
 | Lombok | Redução de boilerplate nas entidades |
+| Docker | Conteinerização da aplicação com Dockerfile otimizado para simplificar o processo de build, distribuição e deploy do servidor. |
 
 ### Front-end
 | Tecnologia | Uso |
