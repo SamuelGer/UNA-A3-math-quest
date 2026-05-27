@@ -65,7 +65,7 @@ O objetivo é estimular o raciocínio lógico e o aprendizado de operações mat
 
 ---
 ## O que foi aprendido?
-Foram desenvolvidas práticas de desenvolvimento WEB, como: Objetos DTO (Data Transfer Object), Estrutura CORS(Cross-Origin Resource Sharing) e o método CorsFilter, Métodos HTTP (GET, POST, PUT, PATCH, DELETE, OPTIONS), Comunicação de API's reais e endpoints, Conteinerização da aplicação e deploy. 
+Foram adquiridas práticas de desenvolvimento WEB, como: Objetos DTO (Data Transfer Object), Estrutura CORS(Cross-Origin Resource Sharing) e o método CorsFilter, Métodos HTTP (GET, POST, PUT, PATCH, DELETE, OPTIONS), Comunicação de API's reais e endpoints, Conteinerização da aplicação e deploy. 
 
 ## Instituição
 
