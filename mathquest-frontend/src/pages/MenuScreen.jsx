@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import MathBackground from '../components/MathBackground';
 import useGameStore, { EMOJIS } from '../store/gameStore';
 import { apiCriarPartida } from '../services/api';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 export default function MenuScreen() {
+  const bp = useBreakpoint();
   const [modal, setModal]   = useState(null);
   const [qtd, setQtd]       = useState(1);
   const [jogadores, setJogadores] = useState([
@@ -44,10 +46,16 @@ export default function MenuScreen() {
     <div style={{position:'relative',width:'100vw',height:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'radial-gradient(ellipse at center,#1A1A0E 0%,#0A0A06 70%)',overflow:'hidden'}}>
       <MathBackground />
       <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.75}}
-        style={{position:'relative',zIndex:1,width:'100%',maxWidth:400,padding:'0 24px',display:'flex',flexDirection:'column',alignItems:'center',gap:38}}>
+        style={{position:'relative',zIndex:1,width:'100%',
+          maxWidth: bp === 'compact' ? '95vw': 400,
+          padding: bp === 'compact'? '0 16px' : '0 24px',
+          display:'flex',flexDirection:'column',alignItems:'center',gap:38}}>
+
         {/* Logo */}
         <div style={{textAlign:'center'}}>
-          <h1 style={{fontFamily:'var(--font-display)',fontSize:'clamp(46px,8vw,78px)',fontWeight:900,color:'var(--gold)',letterSpacing:4,lineHeight:1,textShadow:'0 0 40px rgba(212,160,23,0.4)'}}>MathQuest</h1>
+          <h1 style={{fontFamily:'var(--font-display)',
+            fontSize: bp === 'compact' ? 'clamp(36px, 12vw, 56px)' : 'clamp(46px,8vw,78px)',
+            fontWeight:900,color:'var(--gold)',letterSpacing:4,lineHeight:1,textShadow:'0 0 40px rgba(212,160,23,0.4)'}}>MathQuest</h1>
           <p style={{fontFamily:'var(--font-display)',fontSize:13,color:'#8B6914',letterSpacing:6,textTransform:'uppercase',marginTop:6}}>Caça ao Tesouro</p>
           <div style={{width:180,height:1,background:'linear-gradient(to right,transparent,var(--gold-dim),transparent)',margin:'18px auto 0'}} />
         </div>
