@@ -109,6 +109,78 @@ export default function GameScreen() {
     posicaoAtual: peaoPos[i] ?? j.posicaoAtual ?? 1,
   }));
 
+
+  if (bp === 'compact') {
+    return (
+        <div style={{position:'relative', width:'100vw', height:'100vh', display:'flex', flexDirection:'column', background:'radial-gradient(ellipse at 30% 50%,#141408 0%,#0A0A06 60%)', overflow:'hidden'}}>
+          <MathBackground />
+
+          {/* Layout para celular = TOPO — info jogador ativo */}
+          <div style={{position:'relative', zIndex:1, display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 12px', borderBottom:'1px solid #1A1A10', background:'rgba(18,18,12,0.92)'}}>
+            <div style={{display:'flex', alignItems:'center', gap:8}}>
+              <span style={{fontSize:24}}>{jogadorAtivo?.emoji || '🧙'}</span>
+              <div>
+                <p style={{fontFamily:'var(--font-display)', fontSize:11, fontWeight:700, color:'var(--gold)'}}>{jogadorAtivo?.nome}</p>
+                <p style={{fontSize:9, color:'#5A5040'}}>Casa {peaoPos[turnoAtual] ?? 1} · {jogadorAtivo?.pontos ?? 0} pts · {jogadorAtivo?.dicasDisponiveis ?? 0} dicas</p>
+              </div>
+            </div>
+            <span style={{fontFamily:'var(--font-display)', fontSize:9, color:'var(--gold-dim)', letterSpacing:1}}>VEZ DE JOGAR</span>
+          </div>
+
+          {/* CENTRO — tabuleiro */}
+          <main style={{position:'relative', zIndex:1, flex:1, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', padding:8}}>
+            <div style={{display:'flex', flexDirection:'column', gap:3}}>
+              {LAYOUT.map((linha, li) => (
+                  <div key={li} style={{display:'flex', gap:3}}>
+                    {linha.map(num => (
+                        <div key={num} style={{width:'clamp(36px, 13vw, 52px)'}}>
+                          <BoardSquare numero={num} tipo={getTipo(num)} jogadores={jogadoresComPos} />
+                        </div>
+                    ))}
+                  </div>
+              ))}
+            </div>
+          </main>
+          {/* RODAPÉ — dado + placar + legenda */}
+          <div style={{position:'relative', zIndex:1, display:'flex', alignItems:'center', gap:8, padding:'8px 12px', borderTop:'1px solid #1A1A10', background:'rgba(18,18,12,0.92)'}}>
+            {/* Dado */}
+            <div style={{flexShrink:0}}>
+              <Dado valor={dadoResultado||0} rolando={rolandoDado} onRolar={handleRolar} podeLancar={!questaoAtual&&!rolandoDado&&!movendo} />
+            </div>
+
+            {/* Divisor */}
+            <div style={{width:1, height:60, background:'#1A1A10', flexShrink:0}} />
+
+            {/* Placar */}
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4, overflow:'hidden'}}>
+              {jogadores.map((j, i) => (
+                  <div key={i} style={{display:'flex', alignItems:'center', gap:6, opacity: i===turnoAtual ? 1 : 0.5}}>
+                    <span style={{fontSize:14}}>{j.emoji}</span>
+                    <p style={{fontFamily:'var(--font-display)', fontSize:9, color: i===turnoAtual?'var(--gold)':'#8B7D5A', fontWeight:700, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{j.nome}</p>
+                    <span style={{fontSize:9, color:'#5A5040', marginLeft:'auto'}}>{peaoPos[i]??1}</span>
+                    {i === turnoAtual && <span style={{fontSize:8, color:'var(--gold)'}}>▶</span>}
+                  </div>
+              ))}
+            </div>
+
+            {/* Divisor */}
+            <div style={{width:1, height:60, background:'#1A1A10', flexShrink:0}} />
+
+            {/* Legenda */}
+            <div style={{display:'flex', flexDirection:'column', gap:3, flexShrink:0}}>
+              {[['#4F46E5','Início'],['#374151','Desafio'],['#15803D','Bônus'],['#991B1B','Armadilha'],['#92400E','Tesouro']].map(([cor,lbl]) => (
+                  <div key={lbl} style={{display:'flex', alignItems:'center', gap:4}}>
+                    <div style={{width:8, height:8, borderRadius:2, background:cor, flexShrink:0}} />
+                    <span style={{fontSize:8, color:'#8B7D5A'}}>{lbl}</span>
+                  </div>
+              ))}
+            </div>
+          </div>
+
+          {questaoAtual && !movendo && <QuestionModal />}
+        </div>
+    );
+  }
   return (
     <div style={{position:'relative',
       width:'100vw',height:'100vh',display:'flex',
