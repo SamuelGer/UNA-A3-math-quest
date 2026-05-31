@@ -6,6 +6,7 @@ import BoardSquare from '../components/BoardSquare';
 import Dado from '../components/Dado';
 import QuestionModal from '../components/QuestionModal';
 import MathBackground from '../components/MathBackground';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 function buildLayout() {
   const rows = [];
@@ -29,6 +30,7 @@ export default function GameScreen() {
     animacaoPendente, limparAnimacao,
     respostaFeedback
   } = useGameStore();
+  const bp = useBreakpoint();
 
   const [tabuleiro, setTabuleiro] = useState({});
   const [peaoPos, setPeaoPos]     = useState([]);   // posição visual de cada peão
@@ -102,20 +104,26 @@ export default function GameScreen() {
   const jogadorAtivo = jogadores[turnoAtual];
   const getTipo = (n) => tabuleiro[n] || TIPO_P(n);
 
-  // Passa posição animada (visual) para o BoardSquare, não a do backend
   const jogadoresComPos = jogadores.map((j, i) => ({
     ...j,
     posicaoAtual: peaoPos[i] ?? j.posicaoAtual ?? 1,
   }));
 
   return (
-    <div style={{position:'relative',width:'100vw',height:'100vh',display:'flex',alignItems:'stretch',background:'radial-gradient(ellipse at 30% 50%,#141408 0%,#0A0A06 60%)',overflow:'hidden'}}>
+    <div style={{position:'relative',
+      width:'100vw',height:'100vh',display:'flex',
+      flexDirection: bp === 'compact' ? 'column' : 'row',
+      alignItems:'stretch', background:'radial-gradient(ellipse at 30% 50%,#141408 0%,#0A0A06 60%)',overflow:'hidden'}}>
       <MathBackground />
 
       {/* ── SIDEBAR ── */}
       <motion.aside
         initial={{x:-60,opacity:0}} animate={{x:0,opacity:1}} transition={{delay:0.2}}
-        style={{position:'relative',zIndex:1,width:240,flexShrink:0,padding:'18px 14px',borderRight:'1px solid #1A1A10',display:'flex',flexDirection:'column',gap:10,overflowY:'auto'}}>
+        style={{position:'relative',zIndex:1,
+          width: bp === 'compact' ? '100%' : bp === 'medium' ? 180 : 240,
+          flexShrink:0,padding:'18px 14px',borderRight:'1px solid #1A1A10',display:'flex',
+          flexDirection: bp === 'compact' ? 'column': 'row',
+          gap:10,overflowY:'auto'}}>
 
         {/* Jogador ativo */}
         <div style={{...card, border:'1px solid var(--gold-dim)', textAlign:'center'}}>

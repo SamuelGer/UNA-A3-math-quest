@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const FACES = {
   1:[[50,50]],
@@ -11,6 +12,7 @@ const FACES = {
 };
 
 export default function Dado({ valor, rolando, onRolar, podeLancar }) {
+  const bp = useBreakpoint();
   const [face, setFace] = useState(1);
   const ref = useRef(null);
   useEffect(() => {
@@ -27,7 +29,9 @@ export default function Dado({ valor, rolando, onRolar, podeLancar }) {
         whileHover={podeLancar && !rolando ? {scale:1.1,rotate:4} : {}}
         whileTap={podeLancar && !rolando ? {scale:0.9} : {}}
         transition={{duration:0.85}}
-        style={{width:72,height:72,background:'linear-gradient(135deg,#F5F0E8,#D4C9A8)',borderRadius:14,position:'relative',cursor:podeLancar&&!rolando?'pointer':'default',opacity:!podeLancar?0.5:1,boxShadow:'0 4px 0 #9A8C6A,0 6px 14px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.6)'}}
+        style={{width: bp === 'compact' ? 56 : 72,
+            height: bp === 'compact' ? 56 : 72,
+            background:'linear-gradient(135deg,#F5F0E8,#D4C9A8)',borderRadius:14,position:'relative',cursor:podeLancar&&!rolando?'pointer':'default',opacity:!podeLancar?0.5:1,boxShadow:'0 4px 0 #9A8C6A,0 6px 14px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.6)'}}
       >
         {pts.map(([x,y],i) => (
           <motion.div key={`${face}-${i}`} initial={{scale:0}} animate={{scale:1}} transition={{delay:i*0.03,duration:0.12}}

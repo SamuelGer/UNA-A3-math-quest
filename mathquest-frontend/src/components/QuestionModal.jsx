@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useGameStore from '../store/gameStore';
 import { apiResponder, apiUsarDica } from '../services/api';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const CAT = {
   BOOLEANA:    { label:'Casa Booleana',   cor:'#3B82F6', timer:30 },
@@ -12,6 +13,7 @@ const CAT = {
 };
 
 export default function QuestionModal() {
+  const bp = useBreakpoint();
   const {
     questaoAtual, gameId,
     processarRespostaQuestao, confirmarTurno,  // ← confirmarTurno no lugar de fecharQuestao
@@ -109,15 +111,15 @@ export default function QuestionModal() {
         transition={{ type:'spring', damping:18 }}
         style={{
           background:'#0E0E08', border:'1px solid #2A2820',
-          borderRadius:18, padding:32,
-          width:'100%', maxWidth:540,
+          borderRadius:18, padding: bp === 'compact' ? 18 : 32,
+          width:'100%', maxWidth: bp === 'compact' ? '95vw' : 540,
           maxHeight:'90vh', overflowY:'auto',
         }}
       >
         {/* Header: categoria + timer */}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:18, gap:12 }}>
           <span style={{
-            fontFamily:'var(--font-display)', fontSize:11, fontWeight:700,
+            fontFamily:'var(--font-display)', fontSize: bp === 'compact' ? 15 : 19, fontWeight:700,
             letterSpacing:2, textTransform:'uppercase',
             color:cat.cor, padding:'3px 12px',
             border:`1px solid ${cat.cor}`, borderRadius:20, whiteSpace:'nowrap',
