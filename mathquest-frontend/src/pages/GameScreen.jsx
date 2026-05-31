@@ -194,7 +194,7 @@ export default function GameScreen() {
         style={{position:'relative',zIndex:1,
           width: bp === 'compact' ? '100%' : bp === 'medium' ? 180 : 240,
           flexShrink:0,padding:'18px 14px',borderRight:'1px solid #1A1A10',display:'flex',
-          flexDirection: bp === 'compact' ? 'column': 'row',
+          flexDirection: 'column',
           gap:10,overflowY:'auto'}}>
 
         {/* Jogador ativo */}
