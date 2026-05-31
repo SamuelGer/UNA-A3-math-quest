@@ -54,6 +54,7 @@ O objetivo é estimular o raciocínio lógico e o aprendizado de operações mat
 | Zustand | Gerenciamento global de estado do jogo |
 | Framer Motion | Animações dos peões e transições de UI |
 | Axios | Comunicação HTTP com a API REST |
+| Google M3 | Layout adaptativo por proporção de tela |
 
 ### Entidades do Banco de Dados
 - **partidas** — sessão de jogo (status, turno atual, data)
