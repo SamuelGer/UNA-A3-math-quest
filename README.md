@@ -10,7 +10,7 @@
 
 O MathQuest é um jogo de tabuleiro digital desenvolvido como projeto acadêmico para a disciplina de **Matemática Computacional Aplicada** do curso de **Análise e Desenvolvimento de Sistemas** da **UNA — Cristiano Machado**.
 
-O objetivo é estimular o raciocínio lógico e o aprendizado de operações matemáticas de forma interativa e lúdica, transformando conteúdos como álgebra booleana, funções, bases numéricas, potenciação e contagem em desafios dentro de um jogo multiplayer em tempo real.
+Problema encontrado: Alguns alunos sempre relatam algum nível de dificuldade em matemática. Então, o MathQuest foi desenvolvido com o objetivo de estimular o raciocínio lógico e o aprendizado de operações matemáticas de forma interativa e lúdica, transformando conteúdos como a matemática computacional, em alguns desafios dentro de um jogo multiplayer. A competição te força a melhorar o seu raciocínio para ganhar, com isso o MathQuest é acompanhado com explicações a cada questão ao final das respostas dos jogadores, com objetivo também de ensinar.
 
 ---
 
